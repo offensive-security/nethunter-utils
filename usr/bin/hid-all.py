@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import argparse
 import sys
-sys.path.append("/sdcard/files/modules/")
+sys.path.append("/sdcard/nh_files/modules/")
 from keyseed import *
 
 parser = argparse.ArgumentParser(description='Nethunter HID language/launcher')
@@ -68,27 +68,27 @@ def read_file(filename):
 if (args.wincmd):
 	wincmd(locale)
 	print "sleep 2"
-	read_file(filename = "/sdcard/files/hid-cmd.conf")
+	read_file(filename = "/sdcard/nh_files/hid-cmd.conf")
 elif (args.win7cmd):
 	win7cmd_elevated(locale)
 	print "sleep 2"
-	read_file(filename = "/sdcard/files/hid-cmd.conf")
+	read_file(filename = "/sdcard/nh_files/hid-cmd.conf")
 elif (args.win8cmd):
 	win8cmd_elevated(locale)
 	print "sleep 2"
-	read_file(filename = "/sdcard/files/hid-cmd.conf")
+	read_file(filename = "/sdcard/nh_files/hid-cmd.conf")
 elif (args.win_met):
 	wincmd(locale)
 	print "sleep 2"
-	read_file(filename = "/sdcard/files/rev-met")
+	read_file(filename = "/sdcard/nh_files/rev-met")
 elif (args.win7_met):
 	win7cmd_elevated(locale)
 	print "sleep 2"
-	read_file(filename = "/sdcard/files/rev-met")
+	read_file(filename = "/sdcard/nh_files/rev-met")
 elif (args.win8_met):
 	win8cmd_elevated(locale)
 	print "sleep 2"
-	read_file(filename = "/sdcard/files/rev-met")
+	read_file(filename = "/sdcard/nh_files/rev-met")
 
 # All finished - Hit enter
 enterb()

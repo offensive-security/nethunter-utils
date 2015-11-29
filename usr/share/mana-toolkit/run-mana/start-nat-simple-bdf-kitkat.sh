@@ -2,7 +2,7 @@
 
 upstream=wlan0
 phy=wlan1
-conf=/etc/mana-toolkit/hostapd-karma.conf
+conf=/sdcard/nh_files/configs/hostapd-karma.conf
 hostapd=/usr/lib/mana-toolkit/hostapd
 
 #service network-manager stop

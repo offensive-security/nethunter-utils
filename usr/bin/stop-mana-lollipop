@@ -6,12 +6,15 @@ echo "This is not finished yet"
 upstream=wlan0
 phy=wlan1
 
-
 pkill dhcpd
 pkill sslstrip
 pkill sslsplit
 pkill hostapd
 pkill python
+
+# Kill BDFPROXY if running
+kill -9 'cat /var/run/bdfproxy.pid' 2> /dev/null
+
 # Restore
 iptables-restore < /tmp/rules.txt
 rm /tmp/rules.txt

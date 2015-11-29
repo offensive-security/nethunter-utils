@@ -50,6 +50,16 @@ iptables -A FORWARD -i $phy -o $upstream -j ACCEPT
 # Port redirection
 iptables -t nat -A PREROUTING -i $phy -p tcp --destination-port 80 -j REDIRECT --to-port 8080
 
+# BDF Copy config file from sdcard to /etc/bdfproxy/bdfproxy.cfg
+cp /etc/bdfproxy/bdfproxy.cfg /etc/bdfproxy/bdfproxy.cfg.bak
+cp /sdcard/nh_files/configs/bdfproxy.cfg /etc/bdfproxy/bdfproxy.cfg
+
+# Run BDF
+cd /etc/bdfproxy
+bdfproxy &
+sleep 5
+echo $! > /tmp/bdfproxy.pid
+
 echo "Hit enter to kill me"
 read
 pkill dhcpd

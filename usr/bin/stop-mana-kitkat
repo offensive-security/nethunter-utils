@@ -11,6 +11,8 @@ killall dnsspoof
 #killall ruby
 service apache2 stop
 
+# Kill BDFPROXY if running
+kill -9 'cat /tmp/bdfproxy.pid' 2> /dev/null
 
 iptables -F
 iptables -X

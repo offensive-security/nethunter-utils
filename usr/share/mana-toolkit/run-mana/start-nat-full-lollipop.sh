@@ -1,7 +1,7 @@
 #!/bin/bash
 upstream=wlan0
 phy=wlan1
-conf=/etc/mana-toolkit/hostapd-karma.conf
+conf=/sdcard/nh_files/configs/hostapd-karma.conf
 hostapd=/usr/lib/mana-toolkit/hostapd
 
 echo '1' > /proc/sys/net/ipv4/ip_forward

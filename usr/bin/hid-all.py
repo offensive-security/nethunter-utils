@@ -20,7 +20,9 @@ parser.add_argument('--be', help='Select BE keyboard mapping', action='store_tru
 parser.add_argument('--wincmd', '-w', help='Windows CMD', action='store_true')
 parser.add_argument('--win7cmd', '-w7', help='Windows 7 CMD elevated', action='store_true')
 parser.add_argument('--win8cmd','-w8', help='Windows 8 CMD elevated', action='store_true')
+parser.add_argument('--win10cmd','-w10', help='Windows 10 CMD elevated', action='store_true')
 parser.add_argument('--win_met','-win_met', help='Reverse Windows CMD', action='store_true')
+parser.add_argument('--win10_met','-w10met', help='Reverse Windows 10 CMD', action='store_true')
 parser.add_argument('--win8_met','-w8met', help='Reverse Windows 8 CMD', action='store_true')
 parser.add_argument('--win7_met','-w7met', help='Reverse Windows 7 CMD', action='store_true')
 
@@ -77,6 +79,10 @@ elif (args.win8cmd):
 	win8cmd_elevated(locale)
 	print "sleep 2"
 	read_file(filename = "/sdcard/nh_files/configs/hid-cmd.conf")
+elif (args.win10cmd):
+	win10cmd_elevated(locale)
+	print "sleep 2"
+	read_file(filename = "/sdcard/nh_files/configs/hid-cmd.conf")
 elif (args.win_met):
 	wincmd(locale)
 	print "sleep 2"
@@ -87,6 +93,10 @@ elif (args.win7_met):
 	read_file(filename = "/sdcard/nh_files/configs/rev-tcp")
 elif (args.win8_met):
 	win8cmd_elevated(locale)
+	print "sleep 2"
+	read_file(filename = "/sdcard/nh_files/configs/rev-tcp")
+elif (args.win10_met):
+	win10cmd_elevated(locale)
 	print "sleep 2"
 	read_file(filename = "/sdcard/nh_files/configs/rev-tcp")
 

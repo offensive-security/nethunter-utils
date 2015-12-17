@@ -11,7 +11,9 @@ fi
 if [ "$1" == "hid-cmd-elevated-win7" ]; then
 	LANG=$LANG /usr/bin/hid-all.py --win7cmd $2
 fi
-
+if [ "$1" == "hid-cmd-elevated-win10" ]; then
+	LANG=$LANG /usr/bin/hid-all.py --win10cmd $2
+fi
 # REVERSE COMMANDS
 
 f_reverse(){
@@ -23,6 +25,10 @@ echo " $command" >/sdcard/nh_files/scripts/rev-tcp
 if [ "$1" == "start-rev-met" ]; then
 	f_reverse
 	LANG=$LANG /usr/bin/hid-all.py --win_met $2
+fi
+if [ "$1" == "start-rev-met-elevated-win10" ]; then
+	f_reverse
+	LANG=$LANG /usr/bin/hid-all.py --win10_met $2
 fi
 if [ "$1" == "start-rev-met-elevated-win7" ]; then
 	f_reverse

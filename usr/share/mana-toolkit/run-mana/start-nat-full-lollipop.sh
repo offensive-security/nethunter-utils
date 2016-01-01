@@ -37,7 +37,7 @@ ip route add 10.0.0.0/24 dev $phy scope link table $table
 iptables -F bw_INPUT
 iptables -F bw_OUTPUT
 # Save
-iptables-save > /tmp/rules.txt
+# iptables-save > /tmp/rules.txt
 # Flush
 iptables --policy INPUT ACCEPT
 iptables --policy FORWARD ACCEPT
@@ -91,8 +91,8 @@ pkill sslsplit
 pkill hostapd
 pkill python
 # Restore
-iptables-restore < /tmp/rules.txt
-rm /tmp/rules.txt
+# iptables-restore < /tmp/rules.txt
+# rm /tmp/rules.txt
 # Remove iface and routes
 ip addr flush dev $phy
 ip link set $phy down

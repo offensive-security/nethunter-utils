@@ -1,0 +1,60 @@
+#!/bin/bash
+
+adaptor=$(ip addr | grep wlan1)
+NOW=$(date +"%m-%d-%y-%H%M%S")
+
+# Make sure we have correct settings in /etc/kismet/kismet.conf
+sed -i 's/# logprefix=\/some\/path\/to\/logs/logprefix=\/captures\/kismet/g' /etc/kismet/kismet.conf
+sed -i 's/# ncsource=wlan0/ncsource=wlan1/g' /etc/kismet/kismet.conf
+sed -i 's/gpshost=localhost:2947/gpshost=127.0.0.1:2947/g' /etc/kismet/kismet.conf
+
+
+f_checkwlan1(){
+
+if [ -z "$adaptor" ]; then # First check for wlan 1
+    echo "Attempting to bring wlan1 up" # Still not seeing wlan 1, try again
+    ifconfig wlan1 up # Not up, so bring it
+    sleep 2
+    if [ -z "$adaptor" ]; then
+    	echo "Still not detecting wlan1, please try plugging it in again."
+    	sleep 5
+    	clear
+    	echo -e "\e[31mWLAN1: NOT FOUND\e[0m"
+    	echo ""
+    	read -p "Press any key to exit..."
+    	exit
+    fi
+else
+	echo -e "\e[92mWLAN1: FOUND\e[0m"
+fi
+
+}
+
+f_kismet(){
+    kismet -g -t Kismet-$NOW; # -g = GPS & -t = Title of logfile
+}
+
+f_giskismet(){
+    clear
+    # create database folder or check if one exsists
+    if [ ! -d "/captures/kismet/db" ]; then
+    	mkdir -p "/captures/kismet/db"
+    fi
+    # process all netxml files (duplicated are ignored)
+    cd /captures/kismet/
+    for capture in $(find . -iname '*.netxml'); do
+    	echo "Adding $capture to datbase"
+    	sleep 5
+    	giskismet -x "$capture" --database "/captures/kismet/db/wireless.dbl"
+    done
+    # export kml of all wireless data and copy files to sdcard
+    giskismet --database "/captures/kismet/db/wireless.dbl" -q "select * from wireless" -o "/captures/kismet/kismet-$NOW.kml"
+    echo "Google Earth KML located in chroot at: /captures/kismet/kismet-$NOW.kml"
+    echo "Database files located in chroot at: /captures/kismet/db"
+    read -p "Press enter to exit..."
+}
+
+sleep 5
+f_checkwlan1
+f_kismet
+f_giskismet

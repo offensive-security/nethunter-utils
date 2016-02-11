@@ -49,12 +49,29 @@ f_giskismet(){
     done
     # export kml of all wireless data and copy files to sdcard
     giskismet --database "/captures/kismet/db/wireless.dbl" -q "select * from wireless" -o "/captures/kismet/kismet-$NOW.kml"
-    echo "Google Earth KML located in chroot at: /captures/kismet/kismet-$NOW.kml"
-    echo "Database files located in chroot at: /captures/kismet/db"
-    read -p "Press enter to exit..."
+}
+
+f_kismet_save(){
+if [ -d "/sdcard/captures/" ]; then
+    echo "Detected kali-nh capture folder, moving capture files"
+    mkdir -p /sdcard/captures
+    cd /sdcard/captures
+    zip -rj "kismet-captures-$NOW.zip" /captures/kismet/Kismet-$NOW*
+    echo "Successfully copied to /sdcard/captures/kismet-captures-$NOW.zip"
+    sleep 3
+fi
+
+# option to erase files
+read -p "Would you like to secure erase all Kismet files in /captures folder inside chroot as well as the database? (y/n): " ERASEKISMET
+if [ "$ERASEKISMET" == "y" ]; then
+    echo "Removing capture files..."
+    wipe -f -i -r /captures/kismet/Kismet-$NOW*
+    wipe -f -i -r /captures/kismet/db/*
+fi
 }
 
 sleep 5
 f_checkwlan1
 f_kismet
 f_giskismet
+f_kismet_save

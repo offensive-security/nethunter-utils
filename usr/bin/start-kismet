@@ -8,6 +8,35 @@ sed -i 's/# logprefix=\/some\/path\/to\/logs/logprefix=\/captures\/kismet/g' /et
 sed -i 's/# ncsource=wlan0/ncsource=wlan1/g' /etc/kismet/kismet.conf
 sed -i 's/gpshost=localhost:2947/gpshost=127.0.0.1:2947/g' /etc/kismet/kismet.conf
 
+f_check_dbus(){
+if DBUS=$(pgrep dbus)
+then
+        echo "Dbus is running: $DBUS"
+else
+        echo "Dbus is not running. Staring..."
+        service dbus start
+fi
+}
+
+f_check_gpsd(){
+
+gpsfile=/tmp/gps
+gpsfileout=/tmp/gps_out
+
+if [ ! -f $gpsfile ];then
+  echo "$gpsfile not found, try starting/restarting gps from Nethunter app"
+else
+  echo "$gpsfile found!"
+fi
+
+if [ ! -L $gpsfileout ]; then
+  echo "$gpsfile not found, starting socat"
+  /usr/bin/tail -f /tmp/gps | /usr/bin/socat STDIN PTY,link=/tmp/gps_out &
+  echo "Starting GPSD on /tmp/gps_out"
+  /usr/bin/gpsd -n /tmp/gps_out
+fi
+
+}
 
 f_checkwlan1(){
 
@@ -52,26 +81,48 @@ f_giskismet(){
 }
 
 f_kismet_save(){
-if [ -d "/sdcard/captures/" ]; then
-    echo "Detected kali-nh capture folder, moving capture files"
-    mkdir -p /sdcard/captures
-    cd /sdcard/captures
-    zip -rj "kismet-captures-$NOW.zip" /captures/kismet/Kismet-$NOW*
-    echo "Successfully copied to /sdcard/captures/kismet-captures-$NOW.zip"
-    sleep 3
-fi
+
+echo "Detected kali-nh capture folder, moving capture files"
+mkdir -p /sdcard/captures
+cd /sdcard/captures
+zip -rj "kismet-captures-$NOW.zip" /captures/kismet/Kismet-$NOW*
+echo "Successfully copied to /sdcard/captures/kismet-captures-$NOW.zip"
+sleep 3
 
 # option to erase files
-read -p "Would you like to secure erase all Kismet files in /captures folder inside chroot as well as the database? (y/n): " ERASEKISMET
+read -p "Would you like to secure erase all Kismet session files in /captures folder inside chroot as well as the database? (y/n): " ERASEKISMET
 if [ "$ERASEKISMET" == "y" ]; then
     echo "Removing capture files..."
     wipe -f -i -r /captures/kismet/Kismet-$NOW*
+fi
+read -p "Erase kismet database? (y/n): " ERASEDB
+if [ "$ERASEDB" == "y" ]; then
     wipe -f -i -r /captures/kismet/db/*
 fi
 }
 
+f_cleanup(){
+pkill gpsd
+pkill socat
+rm -f /tmp/gps_out
+rm -f /tmp/gps
+}
+
 sleep 5
+
+#  She packed my bags last night pre-flight
+#  Zero hour nine a.m.
+
+f_check_dbus
+f_check_gpsd
 f_checkwlan1
+
+#  And I think it's gonna be a long long time...
+
 f_kismet
 f_giskismet
 f_kismet_save
+
+# Till touch down brings me round again to find
+
+f_cleanup

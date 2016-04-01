@@ -77,7 +77,7 @@ f_giskismet(){
     	giskismet -x "$capture" --database "/captures/kismet/db/wireless.dbl"
     done
     # export kml of all wireless data and copy files to sdcard
-    giskismet --database "/captures/kismet/db/wireless.dbl" -q "select * from wireless" -o "/captures/kismet/kismet-$NOW.kml"
+    giskismet --database "/captures/kismet/db/wireless.dbl" -q "select * from wireless" -o "/captures/kismet/Kismet-$NOW.kml"
 }
 
 f_kismet_save(){
@@ -90,14 +90,14 @@ echo "Successfully copied to /sdcard/captures/kismet-captures-$NOW.zip"
 sleep 3
 
 # option to erase files
-read -p "Would you like to secure erase all Kismet session files in /captures folder inside chroot as well as the database? (y/n): " ERASEKISMET
+read -p "Would you like to secure erase all Kismet session files in /captures folder inside chroot? (y/n): " ERASEKISMET
 if [ "$ERASEKISMET" == "y" ]; then
     echo "Removing capture files..."
     wipe -f -i -r /captures/kismet/Kismet-$NOW*
 fi
 read -p "Erase kismet database? (y/n): " ERASEDB
 if [ "$ERASEDB" == "y" ]; then
-    wipe -f -i -r /captures/kismet/db/*
+    wipe -f -i -r /captures/kismet/db/wireless.dbl
 fi
 }
 

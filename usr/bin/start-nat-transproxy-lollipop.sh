@@ -89,7 +89,8 @@ sed -i "s/^interface=.*$/interface=$phy/" $conf
 $hostapd $conf &
 sleep 5
 touch /var/lib/dhcp/dhcpd.leases
-dhcpd -cf /etc/mana-toolkit/dhcpd.conf $phy
+dnsmasq -z -C /etc/mana-toolkit/dnsmasq-dhcpd.conf -i $phy -I lo
+#dhcpd -cf /etc/mana-toolkit/dhcpd.conf $phy
 sleep 5
 
 # Add fking rule to table 1006

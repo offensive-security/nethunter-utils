@@ -19,23 +19,13 @@ fi
 }
 
 f_check_gpsd(){
-
-gpsfile=/tmp/gps
 gpsfileout=/tmp/gps_out
 
-if [ ! -f $gpsfile ];then
-  echo "$gpsfile not found, try starting/restarting gps from Nethunter app"
-else
-  echo "$gpsfile found!"
-fi
+echo "$gpsfile not found, starting socat"
+socat TCP:127.0.0.1:9000 PTY,link=/tmp/gps_out &
 
-if [ ! -L $gpsfileout ]; then
-  echo "$gpsfile not found, starting socat"
-  /usr/bin/tail -f /tmp/gps | /usr/bin/socat STDIN PTY,link=/tmp/gps_out &
-  echo "Starting GPSD on /tmp/gps_out"
-  /usr/bin/gpsd -n /tmp/gps_out
-fi
-
+echo "Starting GPSD on /tmp/gps_out"
+gpsd -n /tmp/gps_out
 }
 
 f_checkwlan1(){

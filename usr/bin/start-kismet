@@ -6,7 +6,6 @@ NOW=$(date +"%m-%d-%y-%H%M%S")
 # Make sure we have correct settings in /etc/kismet/kismet.conf
 sed -i 's/# logprefix=\/some\/path\/to\/logs/logprefix=\/captures\/kismet/g' /etc/kismet/kismet.conf
 sed -i 's/# ncsource=wlan0/ncsource=wlan1/g' /etc/kismet/kismet.conf
-sed -i 's/gpshost=localhost:2947/gpshost=127.0.0.1:2947/g' /etc/kismet/kismet.conf
 
 f_check_dbus(){
 if DBUS=$(pgrep dbus)
@@ -18,15 +17,6 @@ else
 fi
 }
 
-f_check_gpsd(){
-gpsfileout=/tmp/gps_out
-
-echo "$gpsfile not found, starting socat"
-socat TCP:127.0.0.1:9000 PTY,link=/tmp/gps_out &
-
-echo "Starting GPSD on /tmp/gps_out"
-gpsd -n /tmp/gps_out
-}
 
 f_checkwlan1(){
 
@@ -35,36 +25,36 @@ if [ -z "$adaptor" ]; then # First check for wlan 1
     ifconfig wlan1 up # Not up, so bring it
     sleep 2
     if [ -z "$adaptor" ]; then
-    	echo "Still not detecting wlan1, please try plugging it in again."
-    	sleep 5
-    	clear
-    	echo -e "\e[31mWLAN1: NOT FOUND\e[0m"
-    	echo ""
-    	read -p "Press any key to exit..."
-    	exit
+        echo "Still not detecting wlan1, please try plugging it in again."
+        sleep 5
+        clear
+        echo -e "\e[31mWLAN1: NOT FOUND\e[0m"
+        echo ""
+        read -p "Press any key to exit..."
+        exit
     fi
 else
-	echo -e "\e[92mWLAN1: FOUND\e[0m"
+    echo -e "\e[92mWLAN1: FOUND\e[0m"
 fi
 
 }
 
 f_kismet(){
-    kismet -g -t Kismet-$NOW; # -g = GPS & -t = Title of logfile
+    kismet -t Kismet-$NOW; --use-gpsd-gps # -t = Title of logfile
 }
 
 f_giskismet(){
     clear
     # create database folder or check if one exsists
     if [ ! -d "/captures/kismet/db" ]; then
-    	mkdir -p "/captures/kismet/db"
+        mkdir -p "/captures/kismet/db"
     fi
     # process all netxml files (duplicated are ignored)
     cd /captures/kismet/
     for capture in $(find . -iname '*.netxml'); do
-    	echo "Adding $capture to datbase"
-    	sleep 5
-    	giskismet -x "$capture" --database "/captures/kismet/db/wireless.dbl"
+        echo "Adding $capture to datbase"
+        sleep 5
+        giskismet -x "$capture" --database "/captures/kismet/db/wireless.dbl"
     done
     # export kml of all wireless data and copy files to sdcard
     giskismet --database "/captures/kismet/db/wireless.dbl" -q "select * from wireless" -o "/captures/kismet/Kismet-$NOW.kml"
@@ -104,7 +94,6 @@ sleep 5
 #  Zero hour nine a.m.
 
 f_check_dbus
-f_check_gpsd
 f_checkwlan1
 
 #  And I think it's gonna be a long long time...

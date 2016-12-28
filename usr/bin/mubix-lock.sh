@@ -36,7 +36,7 @@ done
 
 if [ ! -d "/root/responder" ]; then
     echo "[+] Downloading responder..."
-    git clone https://github.com/spiderlabs/responder
+    git clone https://github.com/lgandx/Responder
 fi
 }
 
@@ -84,7 +84,7 @@ ip link set rndis0 up
 # ================== #
 # Being DHCPD setup  #
 # ================== #
-echo "[+] Creating /root/mbuix-dhcpd.conf"
+echo "[+] Creating /root/mubix-dhcpd.conf"
 cat << EOF > /root/mubix-dhcpd.conf
 
 option domain-name "domain.local";

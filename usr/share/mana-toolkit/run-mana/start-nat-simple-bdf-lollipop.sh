@@ -37,8 +37,14 @@ ip route add 10.0.0.0/24 dev $phy scope link table $table
 # http://lists.netfilter.org/pipermail/netfilter-buglog/2013-October/002995.html
 iptables -F bw_INPUT
 iptables -F bw_OUTPUT
+
 # Save
-# iptables-save > /tmp/rules.txt
+iptables-save > /tmp/rules.txt
+# Remove non-working export lines
+sed --in-place '/rmnet0/d' /tmp/rules.txt
+sed --in-place '/TCPMSS/d' /tmp/rules.txt
+
+
 # Flush
 iptables --policy INPUT ACCEPT
 iptables --policy FORWARD ACCEPT
@@ -63,14 +69,17 @@ echo $! > /tmp/bdfproxy.pid
 
 echo "Hit enter to kill me"
 read
-pkill dhcpd
+#pkill dhcpd
+pkill dnsmasq
 pkill sslstrip
 pkill sslsplit
 pkill hostapd
 pkill python
+
 # Restore
-# iptables-restore < /tmp/rules.txt
-# rm /tmp/rules.txt
+iptables-restore < /tmp/rules.txt
+rm /tmp/rules.txt
+
 # Remove iface and routes
 ip addr flush dev $phy
 ip link set $phy down

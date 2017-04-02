@@ -35,4 +35,5 @@ iptables -A FORWARD -i $phy -o $upstream -j ACCEPT
 #pkill sslsplit
 #pkill hostapd
 #pkill python
+pkill dnsmasq
 #iptables -t nat -F
